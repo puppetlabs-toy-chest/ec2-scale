@@ -72,7 +72,7 @@ q_puppet_cloud_install=n
 q_puppet_enterpriseconsole_install=n
 q_puppet_symlinks_install=y
 q_puppetagent_certname=$(hostname | awk {'print tolower($_)'})
-3q_puppetagent_install=y
+q_puppetagent_install=y
 q_puppetagent_server=<%= private_master %>
 q_puppetca_install=n
 q_puppetmaster_install=n
@@ -108,6 +108,10 @@ NUM_CPUS.times do |thread_id|
     instance_count = NUM_INSTANCES/NUM_CPUS
     if thread_id < (NUM_INSTANCES % NUM_CPUS)
       instance_count += 1
+    end
+
+    if instance_count == 0
+      Process.exit
     end
 
     instances = []
