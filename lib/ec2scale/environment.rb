@@ -154,6 +154,11 @@ q_puppet_agent_first_run=n
       File.open(envfile, 'w+') { |f| YAML.dump(@environment, f) }
     end
 
+    def del_environment
+      FileUtils.rm_rf(envdir)
+      FileUtils.rm(envfile)
+    end
+
     def gen_config_files(internal)
       template = ERB.new(MASTER_ANSWERS)
       File.open("#{envdir}/answers.master", 'w+') do |f|
@@ -269,6 +274,19 @@ q_puppet_agent_first_run=n
       environment_fragments.each do |frag|
         @environment[:agents].concat(YAML.load_file(frag))
       end
+    end
+
+    def destroy_master
+      id = @environment[:master][:id]
+      Fog::Compute.new({:provider => 'AWS'}).terminate_instances([id])
+    end
+
+    def destroy_agents
+      agents = []
+      @environment[:agents].each do |agent|
+        agents << agent[:id]
+      end
+      Fog::Compute.new({:provider => 'AWS'}).terminate_instances(agents)
     end
   end
 end
