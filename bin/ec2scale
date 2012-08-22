@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'ec2scale/cli'
+
+Ec2scale::Cli.run(ARGV)
