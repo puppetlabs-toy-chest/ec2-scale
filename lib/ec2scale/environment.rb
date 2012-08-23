@@ -91,7 +91,7 @@ q_puppet_agent_first_run=n
     end
 
     def envdir
-      File.join(@config[:envdir] || Dir.pwd, "ec2scale")
+      File.join(@config[:envdir] || Dir.pwd, ".ec2scale")
     end
 
     def keypair
@@ -136,17 +136,21 @@ q_puppet_agent_first_run=n
           raise ArgumentError, "Cannot respecify master. Please create a new environment"
         end
       else
+        if not @config[:master]
+          raise ArgumentError, "Must specify a master when creating a new environment"
+        end
+
+        if not @config[:pe_url]
+          raise ArgumentError, "Must specify a URL where the PE installer can be fetched"
+        end
+
         @environment = {
           :keypair => @config[:keypair],
           :pe_url  => @config[:pe_url],
           :agents  => [],
         }
 
-        FileUtils.mkdir_p(envdir)
-
-        if not @config[:master]
-          raise ArgumentError, "Must specify a master when creating a new environment"
-        end
+        FileUtils.mkdir(envdir)
       end
     end
 

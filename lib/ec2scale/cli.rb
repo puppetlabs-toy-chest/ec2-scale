@@ -48,7 +48,7 @@ module Ec2scale
           options[:pe_url] = u
         end
 
-        opts.on("-e", "--environment ENV", "The environment directory") do |e|
+        opts.on("-e", "--environment ENV", "The environment directory. Must already exist.") do |e|
           options[:envdir] = e
         end
       end
